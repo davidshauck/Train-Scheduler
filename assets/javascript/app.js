@@ -1,8 +1,9 @@
-// loading jquery
+// load jquery
 $(document).ready(function() { 
 
-    let rowNumber = 0;
-
+let rowNumber = 0;
+let trainArray = [];
+// let trainArray = [];
 
     $("#add-train").on("click", function(event) {
         event.preventDefault();
@@ -10,15 +11,10 @@ $(document).ready(function() {
         let currentMinutes = new Date().getMinutes();
         console.log(currentHour + ":" + currentMinutes);
 
-
-        console.log(new Date());
-
+        // clear alert div
         $("#alert").html("");
 
 
-//         let event1 = new Date('July 1, 1999 11:30');
-// var event2 = event1.getHours();
-// console.log(event3);
 
         
         // user inputs
@@ -61,6 +57,20 @@ $(document).ready(function() {
 
 
 
+        let trainData = [trainName, trainDest, trainFreq, nextArrival, minutesAway];
+        // console.log("train array:" + trainData);
+    
+        // trainData.forEach(() => 
+        trainArray = [...trainArray, {
+            "name": trainName, 
+            "destination": trainDest, 
+            "frequency": trainFreq, 
+            "next": nextArrival, 
+            "away": minutesAway
+            }]
+        
+        // )
+        console.log(trainArray);
 
         isNumber(trainName, trainDest, trainFreq, nextArrival, minutesAway);
         
