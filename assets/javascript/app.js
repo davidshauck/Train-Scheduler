@@ -6,6 +6,7 @@ let nextArrival;
 let timer = 30;
 let splitTime = [];
 let rowNumber = 0;
+let currentTime;
 
 // start timer
 let intervalID = setInterval(countdown, 1000);
@@ -26,11 +27,39 @@ $("#add-train").on("click", function(event) {
     $("#alert").html("");
     
     // user inputs
-    let trainName = $("#train-name").val()
-    let trainDest = $("#train-destination").val()
-    let firstTrain = $("#first-train").val()
-    let trainFreq = $("#train-frequency").val()
+    let trainName = $("#train-name").val();
+    let trainDest = $("#train-destination").val();
+    let firstTrain = $("#first-train").val();
+    let trainFreq = $("#train-frequency").val();
     trainFreq = parseInt(trainFreq);
+
+    let firstTimeConverted = moment(firstTrain, "HH:mm").subtract(1, "years");
+    console.log(firstTimeConverted);
+
+    let testTime = moment(empStartDate, "L").subtract(1, "years");
+    console.log(testTime);
+
+   let currentTime = moment();
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+    let diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+    var tRemainder = diffTime % trainFreq;
+    console.log(tRemainder);
+
+    var tMinutesTillTrain = trainFreq - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+    debugger;
+
+
+
+
+
 
     // split the start time into an array
     let splitTime = firstTrain.split(":");
@@ -42,9 +71,9 @@ $("#add-train").on("click", function(event) {
     let remainder = (totalElapsedMinutes % trainFreq);
     let minutesAway = trainFreq - remainder;
         // I had "now arriving" but would have to set up another function to clear that out after a few seconds
-        // if (remainder === 0) {   
-        //     minutesAway = "Now arriving";
-        // }
+    // if (remainder === 0) {   
+    //     minutesAway = "Now arriving";
+    // }
 
     // found this at https://www.tutorialspoint.com/online_javascript_editor.php
     let nextArrival = new Date();
@@ -53,6 +82,16 @@ $("#add-train").on("click", function(event) {
     // got the slice functionality here https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
     mins = ('0' + nextArrival.getMinutes()).slice(-2);
     nextArrival = (nextArrival.getHours() + ":" + mins);
+    currentTime = (currentHour + ":" + currentMinutes);
+    console.log("next arrival " + nextArrival);
+    console.log("current time " + currentTime);
+    // if (currentTime === nextArrival) {
+    //     console.log ("yea!");
+    // }
+
+    // if (remainder === 0) {
+    //     nextArrival = "Now arriving";
+    // }
 
     // this is based on what I found here https://stackoverflow.com/questions/7858385/how-to-add-values-to-an-array-of-objects-dynamically-in-javascript
     trainArray = [...trainArray, {
@@ -104,7 +143,7 @@ function makeTable(trainArray) {
 $(document.body).on("click", ".checkbox", function() {
     let removeRow = $(this).attr("data-close");
     $("#row-number-" + removeRow).remove();
-    trainArray = trainArray.splice(removeRow, 1);
+    trainArray.splice(removeRow, 1);
     console.log(trainArray);
 });
 
@@ -146,7 +185,7 @@ function autoUpdate(trainArray) {
         // got the slice functionality here https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
         mins = ('0' + trainArray[i].next.getMinutes()).slice(-2);
         trainArray[i].next = (trainArray[i].next.getHours() + ":" + mins);
-        console.log("next arrival: " + trainArray[i].next);
+        // console.log("next arrival: " + trainArray[i].next);
 
         // update variables
         trainName = trainArray[i].name;

@@ -7,16 +7,22 @@
     <!-- load reset & local styles -->
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    
     <!-- load bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <title>Train Scheduler</title>
 </head>
 <body>
+<!-- Firebase References -->
+<script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
 
 <!-- load jQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- load local javascript file -->
-<script type="text/javascript" src="assets/javascript/app.js"></script>
+<script type="text/javascript" src="assets/javascript/app-firebase.js"></script>
+<!-- load momentjs -->
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
 <div class="container">
     <!-- jumbotron -->
@@ -36,7 +42,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col">Remove</th>
+                            <!-- <th scope="col">Remove</th> -->
                             <th scope="col">Train Name</th>
                             <th scope="col">Destination</th>
                             <th scope="col">Frequency (min)</th>
@@ -62,7 +68,7 @@
                 </div>
                 <div class="panel-body">
                         <div id="alert"></div>
-                        <div id="timer"></div>
+                        <div id="timer">The schedule will update in 30 seconds</div>
                     <form>
                         <div class="form-group">
                             <label for="train-name">Train name</label>
@@ -78,7 +84,7 @@
                         </div>
                         <div class="form-group">
                             <label for="train-frequency">Frequency (min)</label>
-                            <input type="text" class="form-control" id="train-frequency" placeholder="25">
+                            <input type="number" class="form-control" id="train-frequency" placeholder="25">
                         </div>
                         <button type="submit" id="add-train" class="btn btn-primary">Submit</button>
                     </form>
