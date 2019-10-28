@@ -10,7 +10,7 @@ let firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const database = firebase.database();
+let database = firebase.database();
 
 // load jquery
 $(document).ready(function() { 
@@ -26,19 +26,11 @@ let timer = 30;
 database.ref("/trainTimes").on("child_added", function(snapshot) {
 
 let sv = snapshot.val();
-newRow = {};
-// $("tbody").html(" ");
 
+// newRow = {};
 
 newTimes(sv);
 
-
-
-
-// let closeBtn = $("<button>");
-//     closeBtn.attr("data-close", i);
-//     closeBtn.addClass("checkbox");
-//     closeBtn.text("✓");
 
     }, function(errorObject) {
         console.log("The read failed: " + errorObject.code);
@@ -54,12 +46,6 @@ $("#add-train").on("click", function(event) {
 
     // clear alert div
     $("#alert").html("");
-
-
-    // let currentHour = new Date().getHours();
-    // let currentMinutes = new Date().getMinutes();
-
-
     
     // user inputs
     trainName = $("#train-name").val().trim();
@@ -74,19 +60,13 @@ $("#add-train").on("click", function(event) {
         first: firstTrain,
         frequency: trainFreq,
       });   
-
-
     
-
 });
 
 // FUNCTIONS
 
-
-
 // timer function
 function countdown() {
-
     
     timer--;
     $("#timer").html("The schedule will update in " + timer + " seconds");
@@ -105,12 +85,10 @@ function countdown() {
 
     }, function(errorObject) {
         console.log("The read failed: " + errorObject.code);
-});
+    });
         
     }
 }
-
-
 
     function newTimes(sv) {
 
@@ -137,19 +115,61 @@ function countdown() {
         nextTrain = moment().add(tMinutesTillTrain, "minutes");
         console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
 
+        updateRows(sv);
+
         // $("tbody").html(" ");
-        let newRow = $("<tr>");
-        // newRow.attr("id", "row-number-" + i);
-            newRow.append('<td>' + sv.name + "</td>")
-            newRow.append('<td>' + sv.destination + "</td>")
-            newRow.append('<td>' + sv.frequency + "</td>")
-            newRow.append('<td>' + moment(nextTrain).format("hh:mm") + "</td>") // local calculation
-            newRow.append('<td>' + tMinutesTillTrain + "</td>") // local calculation
-            // newRow.prepend(closeBtn);
+    }
+
+    function updateRows(sv) {
+        
+            let closeBtn = $("<button>");
+            closeBtn.attr("data-close", sv.name);
+            closeBtn.addClass("checkbox");
+            closeBtn.text("✓");
+            closeBtn.addClass("close-button");
+
+            let newRow = $("<tr>");
+                newRow.append('<td>' + sv.name + "</td>");
+                newRow.append('<td>' + sv.destination + "</td>");
+                newRow.append('<td>' + sv.frequency + "</td>");
+                newRow.append('<td>' + moment(nextTrain).format("hh:mm") + "</td>") // local calculation
+                newRow.append('<td>' + tMinutesTillTrain + "</td>") // local calculation
+                newRow.prepend(closeBtn);
         $("tbody").append(newRow);
-        console.log("new row " + newRow);
+        console.log(newRow);
 
 
     }
+
+    $(document.body).on("click", ".close-button", function() {
+        let removeRow = $(this).attr("data-close");
+        let folder = firebase.database().ref('/trainTimes');
+        // var key_to_delete = removeRow;
+        let query = folder.orderByChild('name').equalTo(removeRow);
+        query.on('child_added', function(snapshot) {
+            $("tbody").html(" ");
+            
+            snapshot.ref.remove();
+            
+            
+        }, function(errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        
+        });
+
+        database.ref("/trainTimes").on("child_added", function(snapshot) {
+            // $("tbody").html(" ");
+
+
+        sv = snapshot.val();
+        updateRows(sv);
+
+    }, function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
+    });  
+        
+        
+    });
+
 
 });
